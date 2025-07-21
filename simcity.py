@@ -1,5 +1,6 @@
 import pygame
 import sys
+import os
 
 TILE_WIDTH = 64
 TILE_HEIGHT = 32
@@ -43,8 +44,9 @@ def main():
 
     clock = pygame.time.Clock()
 
-    grass_tile = create_tile((34, 177, 76))
-    house_tile = create_tile((195, 111, 81))
+    sprite_path = os.path.join(os.path.dirname(__file__), "sprites")
+    grass_tile = pygame.image.load(os.path.join(sprite_path, "grass.png")).convert_alpha()
+    house_tile = pygame.image.load(os.path.join(sprite_path, "building.png")).convert_alpha()
 
     grid = [["grass" for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
 
