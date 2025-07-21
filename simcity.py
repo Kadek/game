@@ -1,6 +1,7 @@
 import pygame
 import sys
 import os
+import random
 
 TILE_WIDTH = 64
 TILE_HEIGHT = 32
@@ -37,6 +38,23 @@ def create_tile(color):
     return surface
 
 
+class Unit:
+    """A simple walking unit."""
+
+    def __init__(self, x: int, y: int) -> None:
+        self.x = x
+        self.y = y
+
+    def move(self) -> None:
+        """Move randomly one tile in the four cardinal directions."""
+        if random.random() < 0.2:
+            dx, dy = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)])
+            nx, ny = self.x + dx, self.y + dy
+            if 0 <= nx < GRID_SIZE and 0 <= ny < GRID_SIZE:
+                self.x = nx
+                self.y = ny
+
+
 def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -49,6 +67,7 @@ def main():
     house_tile = pygame.image.load(os.path.join(sprite_path, "building.png")).convert_alpha()
 
     grid = [["grass" for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
+    units = []
 
     running = True
     while running:
@@ -59,7 +78,9 @@ def main():
                 mx, my = pygame.mouse.get_pos()
                 gx, gy = iso_to_grid(mx, my)
                 if 0 <= gx < GRID_SIZE and 0 <= gy < GRID_SIZE:
-                    grid[gx][gy] = "house"
+                    if grid[gx][gy] != "house":
+                        grid[gx][gy] = "house"
+                        units.append(Unit(gx, gy))
 
         screen.fill((0, 0, 0))
 
@@ -71,6 +92,17 @@ def main():
                     screen.blit(grass_tile, (sx, sy))
                 elif grid[x][y] == "house":
                     screen.blit(house_tile, (sx, sy))
+
+        # Move and draw units
+        for unit in units:
+            unit.move()
+            ux, uy = grid_to_iso(unit.x, unit.y)
+            pygame.draw.circle(
+                screen,
+                (0, 0, 0),
+                (ux + TILE_WIDTH // 2, uy + TILE_HEIGHT // 2),
+                5,
+            )
 
         pygame.display.flip()
         clock.tick(60)
