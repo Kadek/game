@@ -5,10 +5,10 @@ def formula_simple(m, n):
     return (m * n) // 2
 
 def formula_conditional(m, n):
-    """User's formula: M * N // 2 + M // 2 if N is odd"""
-    result = (m * n) // 2
-    if n % 2 == 1:  # N is odd
-        result += m // 2
+    """User's formula: M // 2 * N + N // 2 if M is odd"""
+    result = (m // 2) * n
+    if m % 2 == 1:  # M is odd
+        result += n // 2
     return result
 
 # Test cases
